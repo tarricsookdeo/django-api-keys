@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.utils.crypto import get_random_string
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
@@ -25,7 +26,7 @@ class APIKeysView(APIView):
             api_secret = get_random_string(
                 64, allowed_chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
             user.api_key = api_key
-            user.api_secret = api_secret
+            user.api_secret = make_password(api_secret)
             user.save()
             return Response(data={"api_key": api_key, "api_secret": api_secret}, status=status.HTTP_200_OK)
 
