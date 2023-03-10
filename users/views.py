@@ -34,7 +34,12 @@ class ValidateAPIKeysView(APIView):
     def post(self, request):
         api_key = request.headers.get("api-key")
         api_secret = request.headers.get("api-secret")
-        user = CustomUser.objects.get(api_key=api_key)
+
+        try:
+            user = CustomUser.objects.get(api_key=api_key)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         if user:
             if user.api_key == api_key and user.has_valid_api_secret(api_secret):
                 return Response(data={"valid": True}, status=status.HTTP_200_OK)
